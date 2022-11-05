@@ -130,10 +130,22 @@ static int ScoreLoROM (bool8_32 skip_header)
 	
 static char *Safe (const char *s)
 {
-   int i;
+   int i, len;
    static char *safe = NULL;
    static int safe_len = 0;
-   int len = strlen (s);
+
+   if (s == NULL)
+   {
+      if (safe)
+      {
+         free(safe);
+         safe = NULL;
+         safe_len = 0;
+      }
+      return NULL;
+   }
+
+   len = strlen (s);
 
    if (!safe || len + 1 > safe_len)
    {
@@ -269,6 +281,10 @@ void MemoryDeinit ()
     }
 
     FreeSDD1Data ();
+
+    /* Ensure that we free the static char
+     * array allocated by Safe() */
+    Safe(NULL);
 }
 
 void FreeSDD1Data ()

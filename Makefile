@@ -197,7 +197,7 @@ else ifeq ($(platform), ps2)
 	AR = mips64r5900el-ps2-elf-ar$(EXE_EXT)
 	STATIC_LINKING = 1
 	LOAD_FROM_MEMORY_TEST = 0
-   CFLAGS += -DPS2 -G0 -DFRAME_SKIP -fomit-frame-pointer -ffast-math
+   CFLAGS += -DPS2 -G0 -fomit-frame-pointer -ffast-math
 	STATIC_LINKING := 1
 
 else ifeq ($(platform), psp1)
@@ -262,6 +262,20 @@ else ifeq ($(platform), gcw0)
    CFLAGS += -std=c99 -fomit-frame-pointer -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
    CFLAGS += -fno-builtin -fno-exceptions
    CFLAGS += -DPATH_MAX=256 -DFAST_LSB_WORD_ACCESS
+
+# MIYOO
+else ifeq ($(platform), miyoo)
+   TARGET := $(TARGET_NAME)_libretro.so
+   CC = /opt/miyoo/usr/bin/arm-linux-gcc
+   CXX = /opt/miyoo/usr/bin/arm-linux-g++
+   AR = /opt/miyoo/usr/bin/arm-linux-ar
+   fpic := -fPIC
+   ARM_ASM = 1
+   ASM_CPU = 0
+   ASM_SPC700 = 0
+   SHARED := -shared -Wl,--version-script=libretro/link.T -Wl,--no-undefined
+   CFLAGS += -fomit-frame-pointer -ffast-math -fno-unroll-loops -flto -mcpu=arm926ej-s
+   CFLAGS += -DFAST_ALIGNED_LSB_WORD_ACCESS
 
 # Windows MSVC 2010 x64
 else ifeq ($(platform), windows_msvc2010_x64)

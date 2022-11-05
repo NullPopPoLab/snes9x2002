@@ -574,11 +574,6 @@ void S9xStartScreenRefresh()
 
    if (IPPU.RenderThisFrame)
    {
-      if (!S9xInitUpdate())
-      {
-         IPPU.RenderThisFrame = FALSE;
-         return;
-      }
       IPPU.RenderedFramesCount++;
       IPPU.PreviousLine = IPPU.CurrentLine = 0;
       IPPU.MaxBrightness = PPU.Brightness;
@@ -597,7 +592,7 @@ void S9xStartScreenRefresh()
       GFX.Delta = (GFX.SubScreen - GFX.Screen) >> 1;
    }
    
-   if (++IPPU.FrameCount % Memory.ROMFramesPerSecond == 0)
+   if (++IPPU.FrameCount == (uint32)Memory.ROMFramesPerSecond)
    {
       IPPU.DisplayedRenderedFrameCount = IPPU.RenderedFramesCount;
       IPPU.RenderedFramesCount = 0;
@@ -661,8 +656,7 @@ void S9xEndScreenRefresh()
       IPPU.ColorsChanged = FALSE;
       //}
 
-      S9xDeinitUpdate(IPPU.RenderedScreenWidth, IPPU.RenderedScreenHeight,
-                      1);
+      S9xDeinitUpdate(IPPU.RenderedScreenWidth, IPPU.RenderedScreenHeight);
    }
 
 #ifdef LAGFIX
